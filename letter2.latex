@@ -1,0 +1,40 @@
+% Use xelatex for processing
+\documentclass[12pt]{letter}
+\usepackage{fontspec}
+\usepackage{setspace}  % For line spacing
+
+% Set your name and address
+\signature{$author$}
+\address{$address$}
+
+\date{\today}
+
+% Configure the font
+\setmainfont[Ligatures=TeX]{$mainfont$}
+
+\begin{document}
+
+% Format sender's address
+\begin{letter}{$recipient$}
+
+    % Optional: Specific spacing for sender's address
+    % \smallskip  % Add space before closing
+
+    \opening{Dear $recipient_name$,}
+
+    $body$
+
+    \closing{$closing$}
+
+\end{letter}
+
+% Signature formatting
+\vspace{-2\parskip}
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+    $author$ \\
+    \vspace*{1\parskip}
+    \hspace*{-10pt}{$author_title$}
+\end{minipage}
+
+\end{document}

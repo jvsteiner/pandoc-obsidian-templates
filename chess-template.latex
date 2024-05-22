@@ -1,0 +1,133 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xskak}
+\usepackage{chessboard}
+\usepackage{float}
+\usepackage{lipsum}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xstring}
+\usepackage{fontspec}
+\usepackage{epigraph}
+\usepackage[LSB,LSBC4,T1]{fontenc}
+
+\usepackage{hyperref}
+\hypersetup{
+$if(title-meta)$
+pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+pdfauthor={$author-meta$},
+$endif$
+$if(keywords)$
+pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+colorlinks=true,
+linkcolor=$if(linkcolor)$$linkcolor$$else$Maroon$endif$,
+citecolor=$if(citecolor)$$citecolor$$else$Blue$endif$,
+urlcolor=$if(urlcolor)$$urlcolor$$else$Blue$endif$,
+$else$
+pdfborder={0 0 0},
+$endif$
+breaklinks=true}
+
+\urlstyle{same}
+
+$for(fontfamilies)$
+\newfontfamily{$fontfamilies.name$}[$fontfamilies.options$]{$fontfamilies.font$}
+$endfor$
+$if(mainfont)$
+\setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$endif$
+$if(sansfont)$
+\setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
+$endif$
+$if(monofont)$
+\setmonofont[Mapping=tex-ansi$if(monofontoptions)$,$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$endif$]{$monofont$}
+$endif$
+
+% Page geometry
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$else$
+\usepackage[a4paper, margin=2cm]{geometry}
+$endif$
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+\setlength{\columnsep}{1cm}
+
+% tightlist for pandoc
+\providecommand{\tightlist}{%
+    \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Highlighting fixing Shaded issues
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{$title$}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\textit{$title$}}
+
+\title{$title$}
+\author{$author$}
+
+$if(date)$
+\date{$date$}
+$else$
+\date{\today}
+$endif$
+
+\begin{document}
+
+\setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+\renewcommand{\abstractname}{$abstract$}
+
+\twocolumn[
+    \begin{@twocolumnfalse}
+        \maketitle
+        $if(quote)$
+        \epigraph{$quote$}{\textit{$quote-author$}}
+        $endif$
+        $if(abstract)$
+        \begin{changemargin}{3.5cm}{3.5cm}
+            \begin{abstract}
+                \begin{center}
+                    \noindent $abstract-text$
+                \end{center}
+            \end{abstract}
+            \vspace{1cm}
+        \end{changemargin}
+        $endif$
+    \end{@twocolumnfalse}
+]
+
+\settextfiglanguage{english}
+\usetextfig
+
+\setboardfontcolors{
+    blackfieldmask=gray!35}
+
+\storechessboardstyle{myboard}{%
+    borderwidth=0.3mm,
+    boardfontencoding=LSBC4,
+    boardfontfamily=alphadia,
+    moverstyle=triangle,
+    showmover}
+\setchessboard{style=myboard}
+
+$body$
+
+\end{document}

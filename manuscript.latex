@@ -1,0 +1,278 @@
+%
+% manuscript.latex
+%
+% Copyright (c) 2022 Don Melton
+%
+% LaTeX template for Pandoc to create PDFs in standard manuscript format
+% with both short story and novel layouts.
+%
+% Version: 2022052301
+%
+% Usage:
+%   pandoc in.md --pdf-engine xelatex --template manuscript.latex -o out.pdf
+%
+% YAML metadata or Pandoc command line options are used for configuration.
+%
+% Basic keys:
+%   title:      full title (default: Untitled)
+%   author:     pen name (default: Unknown)
+%   wordcount:  formatted and rounded number string
+%   surname:    last name in numbered page header ("author" if defined)
+%   keyword:    shortened title in numbered page header ("title" if defined)
+%   version:    optional label centered in page footer
+%   novel:      boolean to select novel layout instead of default short story
+%
+% Contact information keys:
+%   name:       full name (can be "author" if defined)
+%   address:    street address
+%   location:   city, state and zip code
+%   phone:      telephone number
+%   email:      email address
+%   extra:      optional extra information
+%
+% Appearance keys:
+%   mainfont:   main document font (default: Times New Roman)
+%   monofont:   mono document font (default: Courier New)
+%   underline:  boolean to use underline instead of italic for emphasis
+%   papername:  document size (default: letterpaper)
+%   margin:     document margin on all four sides (default: 1.1in)
+%   uppercase:  boolean to uppercase all titles
+%   subtitles:  boolean to use paired second- and third-level chapter titles
+%
+% Pandoc "title-meta," "author-meta," "header-includes," "include-before"
+% and "include-after" variables are also supported.
+%
+% Markdown conversion:
+%   "# Text"    book part or chapter title
+%   "## Text"   chapter title
+%   "### Text"  sub-chapter title
+%   "***"       scene break rendered as "#" character
+%
+% Avoid using block quotations, lists, verbatim blocks, tables, footnotes
+% or other non-typical fiction manuscript content.
+%
+
+% BEGIN PROLOGUE
+% configure document to use 12-point text
+\documentclass[12pt]{scrartcl}
+
+% configure document fonts
+\usepackage{fontspec}
+\setmainfont{$if(mainfont)$$mainfont$$else$Times New Roman$endif$}
+\setmonofont{$if(monofont)$$monofont$$else$Courier New$endif$}
+
+% dynamically configure allowing strikeout text and/or
+% optionally configure using underline instead of italic text for emphasis
+$if(strikeout)$
+\usepackage[$if(underline)$$else$normalem$endif$]{ulem}
+$elseif(underline)$
+\usepackage[ULforem]{ulem}
+$endif$
+
+% configure document size and margin
+% use 1.41-inch margin for 25 lines of text per page
+\usepackage[
+  $if(papername)$$papername$$else$letterpaper$endif$,
+  margin=$if(margin)$$margin$$else$1.1in$endif$
+]{geometry}
+
+% enable fancy header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% enable double spacing
+\usepackage{setspace}
+\doublespacing
+
+% configure all sections to use same font and font size as paragraph text
+\usepackage{sectsty}
+\allsectionsfont{\normalfont\normalsize\nohang\centering\selectfont
+$if(uppercase)$\MakeUppercase$endif$}
+
+% required package for some conditional logic
+\usepackage{ifthen}
+
+% use counter to ensure only one chapter is visible per page
+\newcounter{chaptercount}
+
+% create alias for starting chapter page
+\newcommand{\startchapter}{\clearpage\vspace*{144pt}}
+
+% configure top-level sections ("# Text" in Markdown)
+\RedeclareSectionCommand[
+  beforeskip=0sp,
+  afterskip=24pt,
+  font=\ifthenelse{\equal{\thepage}{1}}
+    % on first numbered page: start new page if not first chapter
+    {\ifthenelse{\equal{\value{chaptercount}}{0}}{}{\startchapter}}
+    % on other numbered page: always start chapter on new page
+    {\startchapter}
+    \normalfont\normalsize\nohang\centering\selectfont
+    % increment chapter count
+    \stepcounter{chaptercount}
+    $if(uppercase)$\MakeUppercase$endif$]{section}
+
+% configure second-level sections ("## Text" in Markdown)
+\RedeclareSectionCommand[
+  beforeskip=0sp,
+  afterskip=$if(subtitles)$1sp$else$24pt$endif$,
+  font=\ifthenelse{\equal{\thepage}{1}}
+    % on first numbered page: start new page if not first chapter
+    {\ifthenelse{\equal{\value{chaptercount}}{0}}{}{\startchapter}}
+    % on other numbered page: always start chapter on new page
+    {\startchapter}
+    \normalfont\normalsize\nohang\centering\selectfont
+    % increment chapter count
+    \stepcounter{chaptercount}
+    $if(uppercase)$\MakeUppercase$endif$]{subsection}
+
+% configure third-level sections ("### Text" in Markdown)
+\RedeclareSectionCommand[
+  beforeskip=24pt,
+  afterskip=24pt,
+  font=\normalfont\normalsize\nohang\centering\selectfont
+  $if(uppercase)$\MakeUppercase$endif$]{subsubsection}
+
+% don't number sections
+\setcounter{secnumdepth}{0}
+
+% configure PDF metadata
+\usepackage{hyperref}
+$if(title-meta)$\hypersetup{pdftitle={$title-meta$}}$endif$
+$if(author-meta)$\hypersetup{pdfauthor={$author-meta$}}$endif$
+
+% configure lists
+\providecommand{\tightlist}{
+  \setlength{\itemsep}{0sp}\setlength{\parskip}{0sp}
+}
+
+% configure tables
+$if(tables)$\usepackage{longtable,booktabs,array}$endif$
+
+% replace any horizonal rule ("***" in Markdown) with "#" character
+\renewcommand{\rule}[2]{\#}
+
+% force first line of all sections be indented to match paragraphs
+\usepackage{indentfirst}
+
+% disable default header rule
+\renewcommand{\headrulewidth}{0sp}
+
+% disable left-side header
+\lhead{}
+
+% configure right-side header
+% hide it on first page of short stories and title page of novels
+\rhead{\ifthenelse{\equal{\thepage}{$if(novel)$0$else$1$endif$}}{}{
+  $if(surname)$$surname$$elseif(author)$$author$$else$Unknown$endif$~/~%
+  $if(uppercase)$\MakeUppercase$endif$%
+  {$if(keyword)$$keyword$$elseif(title)$$title$$else$Untitled$endif$}~/~%
+  \thepage
+}}
+
+% configure center footer for optional version string
+\cfoot{$if(version)$$version$$endif$}
+
+% required for boolean commands
+\usepackage{etoolbox}
+
+% insert Pandoc header content here
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+% END PROLOGUE / BEGIN DOCUMENT
+\begin{document}
+
+% disable default paragraph indent
+\setlength\parindent{0pt}
+
+% temporarily disable double spacing BEFORE minipage
+\begin{singlespace}
+
+% begin minipage with rigid height allowing flexible content
+\begin{minipage}[c][144pt][t]{\textwidth}
+
+% use "author" as "name" only if another contact information field is defined
+\newbool{showauthor}\booltrue{showauthor}
+$if(address)$$elseif(location)$$elseif(phone)$$elseif(email)$$elseif(extra)$
+$else$\boolfalse{showauthor}$endif$
+
+% insert contact information along with word count for short stories
+$if(name)$$name$$elseif(author)$\ifbool{showauthor}{$author$}$endif$
+$if(novel)$$elseif(wordcount)$\hfill About $wordcount$ words$endif$
+
+$if(address)$$address$$endif$
+
+$if(location)$$location$$endif$
+
+$if(phone)$$phone$$endif$
+
+$if(email)$$email$$endif$
+
+$if(extra)$$extra$$endif$
+
+% end rigid-height minipage
+\end{minipage}
+
+% restore double spacing AFTER minipage
+\end{singlespace}
+
+% center everything in title area for short story and entire page for novel
+\begin{center}
+
+% insert manuscript title
+$if(uppercase)$\MakeUppercase$endif${$if(title)$$title$$else$Untitled$endif$}
+
+% insert author byline
+by $if(author)$$author$$else$Unknown$endif$
+
+$if(novel)$ % FOR NOVEL
+
+% fill remainder of page with blank space to position word count at bottom
+$if(wordcount)$\vfill About $wordcount$ words$endif$
+
+% change title page number to "0" so next page will be "1"
+\setcounter{page}{0}
+
+% force title page completion drawing any headers and footers
+\clearpage
+
+% insert vertical space to align with other chapter page titles
+\vspace*{132pt}
+
+$else$ % FOR STORY
+
+% insert vertical space before start of story
+\vspace{48pt}
+
+$endif$ % FOR BOTH
+
+% titling complete so disable centering
+\end{center}
+
+% disable default justification
+\raggedright
+\raggedbottom
+
+% configure paragraph indent AFTER setting justification
+\setlength\parindent{.5in}
+
+% insert Pandoc before-body content here
+$for(include-before)$
+$include-before$
+
+$endfor$
+
+% insert Pandoc formatted body content here
+$body$
+
+% insert Pandoc after-body content here
+$for(include-after)$
+$include-after$
+
+$endfor$
+
+% END DOCUMENT
+\end{document}
+
