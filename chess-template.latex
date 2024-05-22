@@ -16,6 +16,8 @@
 \usepackage{fontspec}
 \usepackage{epigraph}
 \usepackage[LSB,LSBC4,T1]{fontenc}
+\usepackage[autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
 
 \usepackage{hyperref}
 \hypersetup{
