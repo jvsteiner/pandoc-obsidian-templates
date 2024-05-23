@@ -65,7 +65,7 @@ $endif$
 \def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
 \let\endchangemargin=\endlist
 
-\setlength{\columnsep}{1cm}
+\setlength{\columnsep}{0.5cm}
 
 % tightlist for pandoc
 \providecommand{\tightlist}{%
