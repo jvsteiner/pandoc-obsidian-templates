@@ -5,6 +5,7 @@
 \usepackage{fontspec}
 \usepackage[english]{babel}
 \usepackage[autostyle, english = american]{csquotes}
+\usepackage{caption}
 \MakeOuterQuote{"}
 
 %%%%%%%%%% BOOK INFORMATION %%%%%%%%%%
@@ -100,6 +101,7 @@ $highlighting-macros$
 $endif$
 
 \begin{document}
+\captionsetup{labelformat=empty}
 \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
 
 \frontmatter
