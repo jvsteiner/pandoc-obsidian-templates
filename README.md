@@ -14,3 +14,9 @@ confirm with
 ```bash
 kpsewhich lix.sty
 ```
+
+## Novella template
+
+Chapters do not work with markdown syntax, use `\h{My Chapter name}` instead of `# My Chapter name`
+
+Letterine chapter starts can be accessed via `\l{I}` command, assuming the rawtex filter is applied.

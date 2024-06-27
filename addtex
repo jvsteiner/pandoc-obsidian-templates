@@ -1,0 +1,3 @@
+#!/bin/bash
+PWD=$(pwd)
+tlmgr conf auxtrees add $PWD/texmf
