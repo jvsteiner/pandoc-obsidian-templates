@@ -88,12 +88,12 @@
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 % \usepackage[T1]{fontenc} % Use 8-bit encoding
 \usepackage[LSB,LSBC4,T1]{fontenc}
-% \usepackage{mathpazo} % Use the Palatino font
+% \usepackage{mathpazo} % Use the Palatino font - JVS, no
 \usepackage{fontspec}
 
-% \usepackage[protrusion=true, expansion=true]{microtype} % Better typography
+% \usepackage[protrusion=true, expansion=true]{microtype} % Better typography - JVS, no
 
-\linespread{1.05} % Increase line spacing slightly; Palatino benefits from a slight increase by default
+\linespread{1.10} % Increase line spacing slightly; Palatino benefits from a slight increase by default
 
 
 %----------------------------------------------------------------------------------------

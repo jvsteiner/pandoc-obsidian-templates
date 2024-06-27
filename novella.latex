@@ -1,0 +1,28 @@
+% Auth: Nicklas Vraa
+% Docs: https://github.com/NicklasVraa/LiX
+% Everything you need to know about this template is on the github repository above.
+% Stars are appreciated.
+
+\documentclass{novella}
+
+\lang      {english}
+\title     {$title$}
+\subtitle  {$subtitle$}
+\authors   {$author$}
+$if(keywords)$
+$for(keywords)$$keywords$$sep$, $endfor$
+$endif$
+
+\begin{document}
+
+
+%----------------------------------------------------------------------------------------
+%	      BODY
+%----------------------------------------------------------------------------------------
+$body$
+
+% \h{Lorem}
+% \l{L}orem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare pulvinar dolor, blandit ornare sapien lacinia et. Proin erat orci, molestie sed eros at, interdum egestas sem. Nulla facilisi. Phasellus suscipit porttitor augue eu finibus. Morbi eget metus nec ex venenatis vehicula. Vivamus nec eros accumsan, mattis nisi at, auctor diam. Vestibulum nec purus dui.
+
+
+\end{document}
