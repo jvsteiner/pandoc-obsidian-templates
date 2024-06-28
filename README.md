@@ -19,6 +19,13 @@ The idea is that you write a note as usual, but include all required metadata in
 
 Clone this repository to your local machine into the pandoc template directory. This is usually `~/.local/share/pandoc/templates/` on Linux/MacOS or `C:\Users\USERNAME\AppData\Roaming\pandoc\templates` on Windows. You can find the location of the pandoc template directory by running `pandoc --version` and looking for the line that says `Default user data directory:`.
 
+The command to clone the repository is:
+
+```bash
+cd ~/.local/share/pandoc/templates/
+git clone git@github.com:jvsteiner/pandoc-obsidian-templates.git . # the . at the end is important
+```
+
 I have included a folder `texmf` in this repository, and this is used to supplement your tex installation with any customized styles or classes that are required by these templates, since they are not available on CTAN. You can add this to your tex installation by running the included script:
 
 ```bash
