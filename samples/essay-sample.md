@@ -4,6 +4,7 @@ subtitle: A Moral Perspective on 'Lord of the Flies'
 author: Jamie Steiner
 class: Literature class
 date: 26 Jun 2024
+prompt: write a 1000 word essay on the Lord of the flies, arguing that Jack is the protagonist, and indeed, his actions were the most moral of the group.
 header-includes:
   - \usepackage{graphicx}
 additional-pandoc-arguments:
