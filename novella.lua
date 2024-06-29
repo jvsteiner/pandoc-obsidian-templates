@@ -22,7 +22,6 @@ end
 local function process_block(block)
     if block.t == "Para" or block.t == "Plain" then
         local content = block.content
-        print(content)
         if content and #content > 0 then
             local first = content[1]
 
