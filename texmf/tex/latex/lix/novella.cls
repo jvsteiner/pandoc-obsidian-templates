@@ -29,7 +29,7 @@
 }
 
 % SIZE, MARGINS: ---------------------------------------------------------------
-\geometry{letterpaper, top=36mm, bottom=40mm, left=40mm, right=40mm}
+\geometry{a4paper, top=36mm, bottom=40mm, left=40mm, right=40mm}
 
 % HEADINGS: --------------------------------------------------------------------
 \setcounter{secnumdepth}{1}% Levels of heading that will be numbered.
@@ -73,7 +73,7 @@
             \oldtitle{\Huge\textbf{\textsc{\theTitle}}}%
         }{%
             \oldtitle{\Huge\textbf{\textsc{\theTitle}}\\[0.4ex]%
-            \large\scshape\theSubtitle}%
+                \large\scshape\theSubtitle}%
         }
     }
     \@ifundefined{theAuthor}{%
