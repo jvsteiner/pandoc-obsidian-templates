@@ -1,16 +1,16 @@
 ---
 title: Astride Aeloria
 subtitle: A time forgotten
-author: jvsteiner
+author: Jamie Steiner
 publisher: Random Mouse
 isbn: 978-3-16-148410-0
 year: 2024
-header-includes:
+header-includes: 
 additional-pandoc-arguments:
   - --template novel
-  - --lua-filter=/Users/jvsteiner/.local/share/pandoc/templates/rawtex.lua
-  - --lua-filter=/Users/jvsteiner/.local/share/pandoc/templates/novel.lua
-  - --lua-filter=/Users/jvsteiner/.local/share/pandoc/templates/image-size.lua
+  - --lua-filter="$HOME"/.local/share/pandoc/templates/rawtex.lua  
+  - --lua-filter="$HOME"/.local/share/pandoc/templates/novel.lua
+  - --lua-filter="$HOME"/.local/share/pandoc/templates/wrap-image.lua
   - --pdf-engine=xelatex
   - --top-level-division=chapter
 export-from: md
@@ -27,31 +27,30 @@ preface: |
 
 The sky was a bruised shade of twilight as Eleanor Hawthorne stepped into the Whispering Woods, her lantern flickering bravely in the encroaching darkness. She paused at the edge of the forest, feeling an almost tangible barrier between the world she knew and the one that lay beyond. The townsfolk had always spoken of the woods in hushed tones, their faces pale with superstitious dread. But Eleanor was not one to be swayed by mere stories.
 
-![Eleanor in the woods|200x200](https://upic-jvs-upload.s3.eu-west-2.amazonaws.com/obsidian/755d334f495f592b48ff578a5192c5bd.png)
 
-`\pagebreak`
+![Eleanor in the woods|200x200](https://upic-jvs-upload.s3.eu-west-2.amazonaws.com/obsidian/755d334f495f592b48ff578a5192c5bd.png)
 
 Her boots crunched on fallen leaves as she ventured deeper, guided by an old map clutched tightly in her gloved hand. It had been her grandfather's—a cryptic inheritance that spoke of hidden secrets and forgotten treasures. Eleanor's heart raced with a mixture of fear and excitement; she could almost hear it echo in the silence of the woods.
 
 ![Darker and darker...|200x200](https://upic-jvs-upload.s3.eu-west-2.amazonaws.com/obsidian/98b17a45538b455b2fcf54484c45001f.png)
 
-`\pagebreak`
 
 The trees here were ancient, their gnarled branches twisting like skeletal fingers towards the sky. As she walked, a strange sensation prickled at her skin, as though unseen eyes were watching her every move. The air grew colder with each step, and soon her breath appeared in ghostly puffs before her face.
 
 Eleanor stopped abruptly when she reached a clearing bathed in an eerie silver light. In its center stood a stone altar covered in moss and vines, its surface etched with symbols she couldn't decipher. She approached cautiously, her lantern casting long shadows that seemed to dance on their own accord.
 
-![The Letter|200x200](https://upic-jvs-upload.s3.eu-west-2.amazonaws.com/obsidian/40ab3cfc62501ca7b52b4c2e4bdf4c38.png)
-
 Placing the lantern down, she pulled out a piece of parchment from her satchel—an old letter written by her grandfather warning about "the key to another realm" hidden within these woods. Her fingers traced over his elegant script as she tried to make sense of his cryptic words.
 
 Suddenly, a soft whisper brushed against her ear—so faint it could have been mistaken for the wind. Eleanor turned sharply but saw nothing except for shadows playing tricks on her eyes. She felt an inexplicable pull towards the altar and placed both hands upon its cold surface.
+
+![The Letter|200x200](https://upic-jvs-upload.s3.eu-west-2.amazonaws.com/obsidian/40ab3cfc62501ca7b52b4c2e4bdf4c38.png)
 
 To her astonishment, beneath the layers of moss and dirt lay a small indentation shaped perfectly like an old-fashioned keyhole. Her pulse quickened as realization dawned upon her: this was what she'd been looking for all along.
 
 With trembling hands, Eleanor retrieved an ornate key from around her neck—a family heirloom passed down through generations—and fit it into place. As she turned it slowly clockwise, there was a low rumble beneath her feet followed by blinding light that enveloped everything around them…
 
 When it finally subsided moments later—the clearing looked different somehow—brighter yet otherworldly—with colors more vivid than any dream could conjure up…
+
 
 # The Enchanted Realm
 
