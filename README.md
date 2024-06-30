@@ -113,3 +113,7 @@ The second way is to include inline raw TeX in the note, like so:
 Here is some text with a TeX command: `\textbf{Some Bold Text}`. The filter will interpret any inline code string that starts with a backslash as raw TeX, and will convert it to an Inline element in the AST. This is useful for including custom TeX commands in your notes.
 
 - `novella.lua` and `novel.lua` - these filters integrate the markdown format of the note into the TeX expected by the template. For example, it converts the markdown `# Chapter 1` into `\l{Chapter 1}`, which is expected by the novella template. It also creates the letterine effect for the first few words of the chapter. Since the TeX is different for each template, there are separate filters for each. This approach allows me to add more templates in the future easily.
+
+## Sample Content
+
+I have included a sample note in the `samples` directory that shows how to use the frontmatter to export a note to pdf. You can use this as a template for your own notes. The sample note is a snippet from a novel, and shows how to include images in the note, as well as how to include a preface. All non-chess related textual content is generated using ChatGPT. Some prompts are included in the note for fun. Views or interpretations expressed in the note are not necessarily those of the author. Except for the chess part, that's all me.
