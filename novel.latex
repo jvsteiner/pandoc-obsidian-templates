@@ -72,6 +72,19 @@
 \renewcommand\thechapter{\Roman{chapter}}
 \usepackage[center,sc]{titlesec}
 
+% figures
+\usepackage{wrapfig}
+\makeatletter
+\newcommand{\checkheight}[1]{%
+    \par \penalty-100\begingroup%
+    \setbox8=\hbox{#1}%
+    \setlength{\dimen@}{\ht8}%
+    \dimen@ii\pagegoal \advance\dimen@ii-\pagetotal
+    \ifdim \dimen@>\dimen@ii
+        \break
+    \fi\endgroup}
+\makeatother
+
 % headers/footers
 \usepackage{fancyhdr}
 \setlength{\headheight}{15pt}
