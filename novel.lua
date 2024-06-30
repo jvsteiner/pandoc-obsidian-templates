@@ -43,17 +43,6 @@ local function lettrine_first_few_words(para)
                 if end_index then break end
             end
 
-            -- Ensure the effect does not go beyond the first sentence
-            -- local sentence_end = false
-            -- if end_index then
-            --     for j = end_index + 1, #content do
-            --         if content[j].t == "Str" and content[j].text:match("%.") then
-            --             sentence_end = true
-            --             break
-            --         end
-            --     end
-            -- end
-
             -- Create the lettrine LaTeX command
             if #words > 0 then
                 local lettrine_content = table.concat(words, "")

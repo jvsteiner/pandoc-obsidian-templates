@@ -77,8 +77,7 @@
 \makeatletter
 \newcommand{\checkheight}[1]{%
     \par \penalty-100\begingroup%
-    \setbox8=\hbox{#1}%
-    \setlength{\dimen@}{\ht8}%
+    \setlength{\dimen@}{#1}%
     \dimen@ii\pagegoal \advance\dimen@ii-\pagetotal
     \ifdim \dimen@>\dimen@ii
         \break

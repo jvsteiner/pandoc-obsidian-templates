@@ -6,18 +6,6 @@ local function convert_to_latex(element)
     return pandoc.write(doc, "latex")
 end
 
--- Function to create an empty image placeholder
-function create_empty_image_placeholder()
-    -- Create caption (alt text)
-    local caption = {pandoc.Str("fake")}
-    -- Define the source URL (point to an actual blank image in your local directory or online)
-    local src = "./placeholder.png"
-    -- Define the title for the image
-    local title = "fake"
-    -- Create and return the image element
-    return pandoc.Image(caption, src, title)
-end
-
 function Pandoc(doc)
     for i, block in ipairs(doc.blocks) do
         -- Check if the block is a Figure
@@ -45,8 +33,8 @@ function Pandoc(doc)
                     end
                     -- break
                     local wrapfig_begin =
-                        pandoc.RawBlock('latex',
-                                        '\\begin{wrapfigure}{r}{0.5\\textwidth}')
+                        pandoc.RawBlock('latex', '\\checkheight{' .. height ..
+                                            'pt}\n\\begin{wrapfigure}{r}{0.5\\textwidth}')
                     local wrapfig_end = pandoc.RawBlock('latex',
                                                         '\\end{wrapfigure}')
                     local latex_caption = pandoc.Div({
@@ -55,22 +43,8 @@ function Pandoc(doc)
                                              '\\caption{' .. new_caption .. '}')
                         })
                     })
-
-                    local fake_image = create_empty_image_placeholder()
-                    fake_image.attributes.width = width
-                    fake_image.attributes.height = height
-
-                    local new_div = pandoc.Div({
-                        wrapfig_begin, fake_image, latex_caption, wrapfig_end
-                    })
-                    local check_height =
-                        pandoc.RawBlock('latex', '\\checkheight{\n' ..
-                                            convert_to_latex(fake_image) ..
-                                            '\n}')
-
                     local checked_div = pandoc.Div({
-                        check_height, wrapfig_begin, image, latex_caption,
-                        wrapfig_end
+                        wrapfig_begin, image, latex_caption, wrapfig_end
                     })
                     doc.blocks[i] = checked_div
                 end
