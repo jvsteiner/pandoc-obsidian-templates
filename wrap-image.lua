@@ -6,6 +6,35 @@ local function convert_to_latex(element)
     return pandoc.write(doc, "latex")
 end
 
+function add_to_header(meta)
+    -- LaTeX command to include a package
+    local use_package = pandoc.RawBlock('latex', '\\usepackage{wrapfig}')
+
+    -- LaTeX macro definition
+    local custom_macro = pandoc.RawBlock('latex', [[
+\usepackage{wrapfig}
+\makeatletter
+\newcommand{\checkheight}[1]{%
+    \par \penalty-100\begingroup%
+    \setlength{\dimen@}{#1}%
+    \dimen@ii\pagegoal \advance\dimen@ii-\pagetotal
+    \ifdim \dimen@>\dimen@ii
+        \break
+    \fi\endgroup}
+\makeatother
+  ]])
+
+    local header_includes
+    if meta['header-includes'] and meta['header-includes'].t == 'MetaList' then
+        header_includes = meta['header-includes']
+    else
+        header_includes = pandoc.MetaList {meta['header-includes']}
+    end
+    header_includes[#header_includes + 1] = pandoc.MetaBlocks {custom_macro}
+    meta['header-includes'] = header_includes
+    return meta
+end
+
 function Pandoc(doc)
     for i, block in ipairs(doc.blocks) do
         -- Check if the block is a Figure
