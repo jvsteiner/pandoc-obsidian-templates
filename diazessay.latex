@@ -70,11 +70,11 @@ $if(csl-refs)$
 % allow citations to break across lines
 \let\@cite@ofmt\@firstofone
 % avoid brackets around text for \cite:
-\def\@biblabel#1{}
+\def\@biblabel#1{#1}
 \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
 \makeatother
 \newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
+\setlength{\cslhangindent}{2.5em}
 \newlength{\csllabelwidth}
 \setlength{\csllabelwidth}{3em}
 \newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
@@ -101,9 +101,10 @@ $endif$
 
 \setlist{noitemsep} % No spacing between list items
 
-\makeatletter
-\renewcommand\@biblabel[1]{\textbf{#1.}} % Remove the square brackets from each bibliography item ('[1]' to '1.')
-\makeatother
+% commented out to get rid of wierd bullets
+% \makeatletter
+% \renewcommand\@biblabel[1]{\textbf{#1.}} % Remove the square brackets from each bibliography item ('[1]' to '1.')
+% \makeatother
 
 %----------------------------------------------------------------------------------------
 %	DOCUMENT MARGINS
@@ -206,16 +207,16 @@ $if(abstract)$
 \end{abstract}
 $if(keywords)$
 \hspace*{10mm}\textit{Keywords: }$for(keywords)$$keywords$$sep$, $endfor$ %lorem, ipsum, dolor, sit amet, lectus % Keywords
-	$endif$
-		\vspace{20pt} % Vertical whitespace between the abstract and first section
-	$endif$
+$endif$
+\vspace{20pt} % Vertical whitespace between the abstract and first section
+$endif$
 
 
 
-		%----------------------------------------------------------------------------------------
-		%	ESSAY BODY
-		%----------------------------------------------------------------------------------------
-	$body$
+%----------------------------------------------------------------------------------------
+%	ESSAY BODY
+%----------------------------------------------------------------------------------------
+$body$
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
