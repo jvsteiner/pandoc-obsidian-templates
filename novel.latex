@@ -110,6 +110,11 @@ $if(monofont)$
 \setmonofont[Mapping=tex-ansi$if(monofontoptions)$,$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$endif$]{$monofont$}
 $endif$
 
+\usepackage[
+    protrusion=true,  % Enable character protrusion
+    final,            % Enable microtype settings in the final document
+]{microtype}
+
 % % Page geometry
 % $if(geometry)$
 % \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
