@@ -26,7 +26,14 @@ function CodeBlock(el)
         table.remove(lines, 1) -- Remove second line
 
         -- Add leading & to each line for proper left alignment
-        for i, line in ipairs(lines) do lines[i] = "& " .. line end
+        for i, line in ipairs(lines) do
+            if line ~= "" then
+                lines[i] = "& " .. line
+                print(line)
+            else
+                lines[i] = "\newline" -- Preserve blank lines as empty strings
+            end
+        end
 
         -- Combine the remaining lines with `\\` for LaTeX flalign environment, ensuring the equations are left-aligned
         local combined_lines = "\\begin{flalign*}\n" ..
