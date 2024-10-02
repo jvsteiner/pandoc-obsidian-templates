@@ -15,7 +15,7 @@ local function split(inputstr, sep)
     return t
 end
 
-function CodeBlock(el)
+function CodeBlockMathPlugin(el)
     -- Check if the code block has a class "math"
     if el.classes:includes("math") then
         -- Split the text into lines
