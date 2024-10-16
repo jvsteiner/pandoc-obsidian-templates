@@ -57,7 +57,15 @@
 
 \usepackage{enumitem} % Required for list customisation
 
+\usepackage{xcolor}
+
 \usepackage{hyperref}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!red,
+  urlcolor=blue!70!black
+}
 
 \providecommand\phantomsection{}
 
