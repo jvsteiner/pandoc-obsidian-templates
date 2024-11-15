@@ -61,6 +61,8 @@
 
 \usepackage{hyperref}
 
+\usepackage{soul}
+
 \hypersetup{
   colorlinks=true,
   linkcolor=blue!50!red,
