@@ -49,8 +49,8 @@ function Pandoc(doc)
                     -- Convert the caption to a single string
                     local alt_text = pandoc.utils.stringify(image.caption)
                     -- Match the pattern, allowing the alt text to contain spaces
-                    new_caption, width, height = alt_text:match(
-                                                     "^(.-)%s*|%s*(%d+)%s*x%s*(%d+)%s*$")
+                    local new_caption, width, height = alt_text:match(
+                                                           "^(.-)%s*|%s*(%d+)%s*x%s*(%d+)%s*$")
                     -- If the pattern matches, apply the size to the image
                     -- print(new_caption, width, height)
                     if new_caption and width and height then
@@ -59,26 +59,28 @@ function Pandoc(doc)
                         -- Set the width and height attributes for the image
                         image.attributes.width = width
                         image.attributes.height = height
-                    end
-                    -- break
-                    local wrapfig_begin =
-                        pandoc.RawBlock('latex', '\\checkheight{' .. height ..
-                                            'pt}\n\\begin{wrapfigure}{r}{0.5\\textwidth}')
-                    local wrapfig_end = pandoc.RawBlock('latex',
-                                                        '\\end{wrapfigure}')
-                    local latex_caption = pandoc.Div({
-                        pandoc.Para({
-                            pandoc.RawInline('latex',
-                                             '\\caption{' .. new_caption .. '}')
+
+                        -- Only create these elements if we have valid height and caption
+                        local wrapfig_begin =
+                            pandoc.RawBlock('latex', '\\checkheight{' .. height ..
+                                                'pt}\n\\begin{wrapfigure}{r}{0.5\\textwidth}')
+                        local wrapfig_end =
+                            pandoc.RawBlock('latex', '\\end{wrapfigure}')
+                        local latex_caption = pandoc.Div({
+                            pandoc.Para({
+                                pandoc.RawInline('latex', '\\caption{' ..
+                                                     new_caption .. '}')
+                            })
                         })
-                    })
-                    local checked_div = pandoc.Div({
-                        wrapfig_begin, image, latex_caption, wrapfig_end
-                    })
-                    doc.blocks[i] = checked_div
+                        local checked_div = pandoc.Div({
+                            wrapfig_begin, image, latex_caption, wrapfig_end
+                        })
+                        doc.blocks[i] = checked_div
+
+                        -- set the Figure caption
+                        block.caption = {pandoc.Str(new_caption)}
+                    end
                 end
-                -- set the Figure caption
-                block.caption = {pandoc.Str(new_caption)}
             end
         end
     end

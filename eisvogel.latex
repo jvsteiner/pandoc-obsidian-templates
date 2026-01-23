@@ -1,6 +1,6 @@
 %%
-% Copyright (c) 2017 - 2023, Pascal Wagler;
-% Copyright (c) 2014 - 2023, John MacFarlane
+% Copyright (c) 2017 - 2025, Pascal Wagler;
+% Copyright (c) 2014 - 2025, John MacFarlane
 %
 % All rights reserved.
 %
@@ -39,7 +39,6 @@
 % For usage information and examples visit the official GitHub page:
 % https://github.com/Wandmalfarbe/pandoc-latex-template
 %%
-
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
@@ -47,8 +46,13 @@
 $if(CJKmainfont)$
 \PassOptionsToPackage{space}{xeCJK}
 $endif$
-%
 \documentclass[
+$for(babel-otherlangs)$
+  $babel-otherlangs$,
+$endfor$
+$if(babel-lang)$
+  $babel-lang$,
+$endif$
 $if(fontsize)$
   $fontsize$,
 $endif$
@@ -57,84 +61,49 @@ $if(papersize)$
 $else$
   paper=a4,
 $endif$
-$if(beamer)$
-  ignorenonframetext,
-$if(handout)$
-  handout,
-$endif$
-$if(aspectratio)$
-  aspectratio=$aspectratio$,
-$endif$
-$endif$
 $for(classoption)$
   $classoption$$sep$,
 $endfor$
   ,captions=tableheading
-]{$if(beamer)$$documentclass$$else$$if(book)$scrbook$else$scrartcl$endif$$endif$}
-$if(beamer)$
-$if(background-image)$
-\usebackgroundtemplate{%
-  \includegraphics[width=\paperwidth]{$background-image$}%
-}
-% In beamer background-image does not work well when other images are used, so this is the workaround
-\pgfdeclareimage[width=\paperwidth,height=\paperheight]{background}{$background-image$}
-\usebackgroundtemplate{\pgfuseimage{background}}
-$endif$
-\usepackage{pgfpages}
-\setbeamertemplate{caption}[numbered]
-\setbeamertemplate{caption label separator}{: }
-\setbeamercolor{caption name}{fg=normal text.fg}
-\beamertemplatenavigationsymbols$if(navigation)$$navigation$$else$empty$endif$
-$for(beameroption)$
-\setbeameroption{$beameroption$}
-$endfor$
-% Prevent slide breaks in the middle of a paragraph
-\widowpenalties 1 10000
-\raggedbottom
-$if(section-titles)$
-\setbeamertemplate{part page}{
-  \centering
-  \begin{beamercolorbox}[sep=16pt,center]{part title}
-    \usebeamerfont{part title}\insertpart\par
-  \end{beamercolorbox}
-}
-\setbeamertemplate{section page}{
-  \centering
-  \begin{beamercolorbox}[sep=12pt,center]{part title}
-    \usebeamerfont{section title}\insertsection\par
-  \end{beamercolorbox}
-}
-\setbeamertemplate{subsection page}{
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center]{part title}
-    \usebeamerfont{subsection title}\insertsubsection\par
-  \end{beamercolorbox}
-}
-\AtBeginPart{
-  \frame{\partpage}
-}
-\AtBeginSection{
-  \ifbibliography
-  \else
-    \frame{\sectionpage}
-  \fi
-}
-\AtBeginSubsection{
-  \frame{\subsectionpage}
-}
-$endif$
-$endif$
+]{$if(book)$scrbook$else$scrartcl$endif$}
 $if(beamerarticle)$
 \usepackage{beamerarticle} % needs to be loaded first
 $endif$
-\usepackage{amsmath,amssymb}
-$if(linestretch)$
-\usepackage{setspace}
+\usepackage{xcolor}
+$if(footnotes-pretty)$
+% load footmisc in order to customize footnotes (footmisc has to be loaded before hyperref, cf. https://tex.stackexchange.com/a/169124/144087)
+\usepackage[hang,flushmargin,bottom,multiple]{footmisc}
+\setlength{\footnotemargin}{0.8em} % set space between footnote nr and text
+\setlength{\footnotesep}{\baselineskip} % set space between multiple footnotes
+\setlength{\skip\footins}{0.3cm} % set space between page content and footnote
+\setlength{\footskip}{0.9cm} % set space between footnote and page bottom
+$endif$
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $else$
-% Use setspace anyway because we change the default line spacing.
-% The spacing is changed early to affect the titlepage and the TOC.
-\usepackage{setspace}
-\setstretch{1.2}
+\usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+\usepackage{amsmath,amssymb}
+$if(cancel)$
+\usepackage{cancel}
+$endif$
+$if(titlepage-logo)$
+\usepackage[export]{adjustbox}
+\usepackage{graphicx}
+$endif$
+
+% add backlinks to footnote references, cf. https://tex.stackexchange.com/questions/302266/make-footnote-clickable-both-ways
+$if(footnotes-disable-backlinks)$
+$else$
+\usepackage{footnotebackref}
+$endif$
+$--
+$-- section numbering
+$--
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 $endif$
 \usepackage{iftex}
 \ifPDFTeX
@@ -159,27 +128,6 @@ $else$
 $-- Set default font before Beamer theme so the theme can override it
 \usepackage{lmodern}
 $endif$
-$-- Set Beamer theme before user font settings so they can override theme
-$if(beamer)$
-$if(theme)$
-\usetheme[$for(themeoptions)$$themeoptions$$sep$,$endfor$]{$theme$}
-$endif$
-$if(colortheme)$
-\usecolortheme{$colortheme$}
-$endif$
-$if(fonttheme)$
-\usefonttheme{$fonttheme$}
-$endif$
-$if(mainfont)$
-\usefonttheme{serif} % use mainfont rather than sansfont for slide text
-$endif$
-$if(innertheme)$
-\useinnertheme{$innertheme$}
-$endif$
-$if(outertheme)$
-\useoutertheme{$outertheme$}
-$endif$
-$endif$
 $-- User font settings (must come after default font and Beamer theme)
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
@@ -187,13 +135,37 @@ $endif$
 \ifPDFTeX\else
   % xetex/luatex font selection
 $if(mainfont)$
-  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$if(mainfontfallback)$
+  \ifLuaTeX
+    \usepackage{luaotfload}
+    \directlua{luaotfload.add_fallback("mainfontfallback",{
+      $for(mainfontfallback)$"$mainfontfallback$"$sep$,$endfor$
+    })}
+  \fi
+$endif$
+  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$$if(mainfontfallback)$,RawFeature={fallback=mainfontfallback}$endif$]{$mainfont$}
 $endif$
 $if(sansfont)$
-  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
+$if(sansfontfallback)$
+  \ifLuaTeX
+    \usepackage{luaotfload}
+    \directlua{luaotfload.add_fallback("sansfontfallback",{
+      $for(sansfontfallback)$"$sansfontfallback$"$sep$,$endfor$
+    })}
+  \fi
+$endif$
+  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$$if(sansfontfallback)$,RawFeature={fallback=sansfontfallback}$endif$]{$sansfont$}
 $endif$
 $if(monofont)$
-  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$]{$monofont$}
+$if(monofontfallback)$
+  \ifLuaTeX
+    \usepackage{luaotfload}
+    \directlua{luaotfload.add_fallback("monofontfallback",{
+      $for(monofontfallback)$"$monofontfallback$"$sep$,$endfor$
+    })}
+  \fi
+$endif$
+  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$if(monofontfallback)$,RawFeature={fallback=monofontfallback}$endif$]{$monofont$}
 $endif$
 $for(fontfamilies)$
   \newfontfamily{$fontfamilies.name$}[$for(fontfamilies.options)$$fontfamilies.options$$sep$,$endfor$]{$fontfamilies.font$}
@@ -213,12 +185,12 @@ $if(CJKmainfont)$
   \ifXeTeX
     \usepackage{xeCJK}
     \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
-    $if(CJKsansfont)$
-      \setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}
-    $endif$
-    $if(CJKmonofont)$
-      \setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}
-    $endif$
+$if(CJKsansfont)$
+    \setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}
+$endif$
+$if(CJKmonofont)$
+    \setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}
+$endif$
   \fi
 $endif$
 $if(luatexjapresetoptions)$
@@ -258,6 +230,18 @@ $endif$
   \usepackage[$for(microtypeoptions)$$microtypeoptions$$sep$,$endfor$]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+
+$if(linestretch)$
+\usepackage{setspace}
+$else$
+% Use setspace anyway because we change the default line spacing.
+% The spacing is changed early to affect the titlepage and the TOC.
+\usepackage{setspace}
+\setstretch{1.2}
+$endif$
+$--
+$-- paragraph formatting
+$--
 $if(indent)$
 $else$
 \makeatletter
@@ -271,41 +255,41 @@ $else$
   \KOMAoptions{parskip=half}}
 \makeatother
 $endif$
+$if(beamer)$
+$else$
+$if(block-headings)$
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+$endif$
+$endif$
+$--
+$-- verbatim in notes
+$--
 $if(verbatim-in-note)$
 \usepackage{fancyvrb}
 $endif$
-\usepackage{xcolor}
-\definecolor{default-linkcolor}{HTML}{A50000}
-\definecolor{default-filecolor}{HTML}{A50000}
-\definecolor{default-citecolor}{HTML}{4077C0}
-\definecolor{default-urlcolor}{HTML}{4077C0}
-$if(footnotes-pretty)$
-% load footmisc in order to customize footnotes (footmisc has to be loaded before hyperref, cf. https://tex.stackexchange.com/a/169124/144087)
-\usepackage[hang,flushmargin,bottom,multiple]{footmisc}
-\setlength{\footnotemargin}{0.8em} % set space between footnote nr and text
-\setlength{\footnotesep}{\baselineskip} % set space between multiple footnotes
-\setlength{\skip\footins}{0.3cm} % set space between page content and footnote
-\setlength{\footskip}{0.9cm} % set space between footnote and page bottom
-$endif$
-$if(geometry)$
-$if(beamer)$
-\geometry{$for(geometry)$$geometry$$sep$,$endfor$}
-$else$
-\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$endif$
-$else$
-$if(beamer)$
-$else$
-\usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$endif$
-$endif$
-$if(titlepage-logo)$
-\usepackage[export]{adjustbox}
-\usepackage{graphicx}
-$endif$
-$if(beamer)$
-\newif\ifbibliography
-$endif$
+$-- highlighting
 $if(listings)$
 \usepackage{listings}
 \newcommand{\passthrough}[1]{#1}
@@ -334,8 +318,12 @@ $highlighting-macros$
 \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,fontsize=$if(code-block-font-size)$$code-block-font-size$$else$\small$endif$,commandchars=\\\{\}}
 
 $endif$
+$--
+$-- tables
+$--
 $if(tables)$
 \usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 $if(multirow)$
 \usepackage{multirow}
 $endif$
@@ -357,11 +345,9 @@ $else$
 \makesavenoteenv{longtable}
 $endif$
 $endif$
-% add backlinks to footnote references, cf. https://tex.stackexchange.com/questions/302266/make-footnote-clickable-both-ways
-$if(footnotes-disable-backlinks)$
-$else$
-\usepackage{footnotebackref}
-$endif$
+$--
+$-- graphics
+$--
 $if(graphics)$
 \usepackage{graphicx}
 \makeatletter
@@ -385,13 +371,24 @@ $endif$
 $if(svg)$
 \usepackage{svg}
 $endif$
+$--
+$-- strikeout/underline
+$--
 $if(strikeout)$
-$-- also used for underline
 \ifLuaTeX
   \usepackage{luacolor}
   \usepackage[soul]{lua-ul}
 \else
-\usepackage{soul}
+  \usepackage{soul}
+$if(beamer)$
+  \makeatletter
+  \let\HL\hl
+  \renewcommand\hl{% fix for beamer highlighting
+    \let\set@color\beamerorig@set@color
+    \let\reset@color\beamerorig@reset@color
+    \HL}
+  \makeatother
+$endif$
 $if(CJKmainfont)$
   \ifXeTeX
     % soul's \st doesn't work for CJK:
@@ -401,34 +398,9 @@ $if(CJKmainfont)$
 $endif$
 \fi
 $endif$
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-$if(numbersections)$
-\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
-$else$
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-$endif$
-$if(subfigure)$
-\usepackage{subcaption}
-$endif$
-$if(beamer)$
-$else$
-$if(block-headings)$
-% Make \paragraph and \subparagraph free-standing
-\ifx\paragraph\undefined\else
-  \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
-\fi
-\ifx\subparagraph\undefined\else
-  \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
-\fi
-$endif$
-$endif$
-$if(pagestyle)$
-\pagestyle{$pagestyle$}
-$endif$
+$--
+$-- CSL citations
+$--
 $if(csl-refs)$
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
@@ -446,55 +418,72 @@ $if(csl-refs)$
 \newlength{\csllabelwidth}
 \setlength{\csllabelwidth}{3em}
 \newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
-  {\begin{list}{}{%
-   \setlength{\itemindent}{0pt}
-   \setlength{\leftmargin}{0pt}
-   \setlength{\parsep}{0pt}
-   % turn on hanging indent if param 1 is 1
-   \ifodd #1
-    \setlength{\leftmargin}{\cslhangindent}
-    \setlength{\itemindent}{-1\cslhangindent}
-   \fi
-   % set entry spacing
-   \setlength{\itemsep}{#2\baselineskip}}}
-  {\end{list}}
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
 \usepackage{calc}
 \newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 $endif$
+$--
+$-- Babel language support
+$--
 $if(lang)$
 \ifLuaTeX
-\usepackage[bidi=basic]{babel}
+\usepackage[bidi=basic$if(shorthands)$$else$,shorthands=off$endif$$for(babeloptions)$,$babeloptions$$endfor$]{babel}
 \else
-\usepackage[bidi=default]{babel}
+\usepackage[bidi=default$if(shorthands)$$else$,shorthands=off$endif$$for(babeloptions)$,$babeloptions$$endfor$]{babel}
 \fi
 $if(babel-lang)$
-\babelprovide[main,import]{$babel-lang$}
 $if(mainfont)$
 \ifPDFTeX
 \else
-\babelfont{rm}[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+\babelfont{rm}[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$$if(mainfontfallback)$,RawFeature={fallback=mainfontfallback}$endif$]{$mainfont$}
 \fi
 $endif$
 $endif$
-$for(babel-otherlangs)$
-\babelprovide[import]{$babel-otherlangs$}
-$endfor$
 $for(babelfonts/pairs)$
 \babelfont[$babelfonts.key$]{rm}{$babelfonts.value$}
 $endfor$
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-$endif$
-$for(header-includes)$
-$header-includes$
-$endfor$
 \ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
+  \usepackage{selnolig} % disable illegal ligatures
 \fi
+$endif$
+$--
+$-- pagestyle
+$--
+$if(pagestyle)$
+\pagestyle{$pagestyle$}
+$endif$
+$--
+$-- prevent overfull lines
+$--
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+$--
+$-- tight lists
+$--
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$--
+$-- subfigure support
+$--
+$if(subfigure)$
+\usepackage{subcaption}
+$endif$
+$--
+$-- text direction support for pdftex
+$--
 $if(dir)$
 \ifPDFTeX
   \TeXXeTstate=1
@@ -503,7 +492,16 @@ $if(dir)$
   \newenvironment{RTL}{\beginR}{\endR}
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
+\ifluatex
+  \newcommand{\RL}[1]{\bgroup\textdir TRT#1\egroup}
+  \newcommand{\LR}[1]{\bgroup\textdir TLT#1\egroup}
+  \newenvironment{RTL}{\textdir TRT\pardir TRT\bodydir TRT}{}
+  \newenvironment{LTR}{\textdir TLT\pardir TLT\bodydir TLT}{}
+\fi
 $endif$
+$--
+$-- bibliography support support for natbib and biblatex
+$--
 $if(natbib)$
 \usepackage[$natbiboptions$]{natbib}
 \bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
@@ -514,13 +512,16 @@ $for(bibliography)$
 \addbibresource{$bibliography$}
 $endfor$
 $endif$
-$if(nocite-ids)$
-\nocite{$for(nocite-ids)$$it$$sep$, $endfor$}
-$endif$
+$--
+$-- csquotes
+$--
 $if(csquotes)$
-\usepackage{csquotes}
+\usepackage[$for(csquotesoptions)$$csquotesoptions$$sep$,$endfor$]{csquotes}
 $endif$
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+$for(header-includes)$
+$header-includes$
+$endfor$
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{$if(urlstyle)$$urlstyle$$else$same$endif$}
 $if(links-as-notes)$
@@ -530,6 +531,11 @@ $endif$
 $if(verbatim-in-note)$
 \VerbatimFootnotes % allow verbatim text in footnotes
 $endif$
+\definecolor{default-linkcolor}{HTML}{A50000}
+\definecolor{default-filecolor}{HTML}{A50000}
+\definecolor{default-citecolor}{HTML}{4077C0}
+\definecolor{default-urlcolor}{HTML}{4077C0}
+
 \hypersetup{
 $if(title-meta)$
   pdftitle={$title-meta$},
@@ -553,44 +559,41 @@ $if(colorlinks)$
   citecolor={$if(citecolor)$$citecolor$$else$default-citecolor$endif$},
   urlcolor={$if(urlcolor)$$urlcolor$$else$default-urlcolor$endif$},
 $else$
+$if(boxlinks)$
+$else$
   hidelinks,
+$endif$
 $endif$
   breaklinks=true,
   pdfcreator={LaTeX via pandoc with the Eisvogel template}}
+$if(pdf-trailer-id)$
+
+\ifXeTeX
+\special{pdf:trailerid [ $pdf-trailer-id$ ]}
+\fi
+\ifPDFTeX
+\pdftrailerid{}
+\pdftrailer{/ID [ $pdf-trailer-id$ ]}
+\fi
+\ifLuaTeX
+\pdfvariable trailerid {[ $pdf-trailer-id$ ]}
+\fi
+$endif$
+
 $if(title)$
 \title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
 $endif$
 $if(subtitle)$
-$if(beamer)$
-$else$
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
-$endif$
 \subtitle{$subtitle$}
 $endif$
 \author{$for(author)$$author$$sep$ \and $endfor$}
 \date{$date$}
-$if(beamer)$
-$if(institute)$
-\institute{$for(institute)$$institute$$sep$ \and $endfor$}
-$endif$
-$if(titlegraphic)$
-\titlegraphic{\includegraphics{$titlegraphic$}}
-$endif$
-$if(logo)$
-\logo{\includegraphics{$logo$}}
-$endif$
-$endif$
-
-
-
-%%
-%% added
-%%
 
 $if(page-background)$
 \usepackage[pages=all]{background}
@@ -626,11 +629,8 @@ $endif$
 % captions
 %
 \definecolor{caption-color}{HTML}{777777}
-$if(beamer)$
-$else$
 \usepackage[font={stretch=1.2}, textfont={color=caption-color}, position=top, skip=4mm, labelfont=bf, singlelinecheck=false, justification=$if(caption-justification)$$caption-justification$$else$raggedright$endif$]{caption}
 \setcapindent{0em}
-$endif$
 
 %
 % blockquote
@@ -648,6 +648,11 @@ $endif$
 %
 % 'default' option sets the default
 % font family to Source Sans Pro, not \sfdefault.
+%
+% Note that the font has been officially renamed to `Source Sans 3`, and
+% the version provided by the `sourcesanspro` package is slightly outdated.
+% You can install the newer version locally and use it, for example, with
+% `mainfont: "Source Sans 3"` in the YAML metadata (requires XeTeX or LuaTeX).
 %
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   $if(fontfamily)$
@@ -686,24 +691,17 @@ $endif$
 % heading color
 %
 \definecolor{heading-color}{RGB}{40,40,40}
-$if(beamer)$
-$else$
-\addtokomafont{section}{\color{heading-color}}
-$endif$
-% When using the classes report, scrreprt, book,
-% scrbook or memoir, uncomment the following line.
-%\addtokomafont{chapter}{\color{heading-color}}
+% By default, the KOMA-Script classes will typeset sectioning headings in
+% sans-serif. Use the normal body font for headings.
+\addtokomafont{disposition}{\normalfont\color{heading-color}\bfseries}
 
 %
 % variables for title, author and date
 %
-$if(beamer)$
-$else$
 \usepackage{titling}
 \title{$title$}
 \author{$for(author)$$author$$sep$, $endfor$}
 \date{$date$}
-$endif$
 
 %
 % tables
@@ -871,8 +869,6 @@ $endif$
 %
 % header and footer
 %
-$if(beamer)$
-$else$
 $if(disable-header-and-footer)$
 $else$
 \usepackage[headsepline,footsepline]{scrlayer-scrpage}
@@ -906,19 +902,18 @@ contents={%
 }
 $endif$
 $endif$
-$endif$
 
-%%
-%% end added
-%%
+%
+% Define watermark
+%
+$if(watermark)$
+\usepackage{draftwatermark}
+\SetWatermarkText{$watermark$}
+\SetWatermarkScale{.5}
+$endif$
 
 \begin{document}
 
-%%
-%% begin titlepage
-%%
-$if(beamer)$
-$else$
 $if(titlepage)$
 \begin{titlepage}
 $if(titlepage-background)$
@@ -986,22 +981,13 @@ $endif$
 \restoregeometry
 \pagenumbering{arabic}
 $endif$
-$endif$
-
-%%
-%% end titlepage
-%%
 
 $if(has-frontmatter)$
 \frontmatter
 $endif$
 $if(title)$
-$if(beamer)$
-\frame{\titlepage}
 % don't generate the default title
-% $else$
 % \maketitle
-$endif$
 $if(abstract)$
 \begin{abstract}
 $abstract$
@@ -1022,20 +1008,11 @@ $if(toc)$
 $if(toc-title)$
 \renewcommand*\contentsname{$toc-title$}
 $endif$
-$if(beamer)$
-\begin{frame}[allowframebreaks]
-$if(toc-title)$
-  \frametitle{$toc-title$}
-$endif$
-  \tableofcontents[hideallsubsections]
-\end{frame}
-$if(toc-own-page)$
-\newpage
-$endif$
-$else$
 {
 $if(colorlinks)$
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+$if(toccolor)$
+\hypersetup{linkcolor=$toccolor$}
+$endif$
 $endif$
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
@@ -1043,7 +1020,6 @@ $if(toc-own-page)$
 \newpage
 $endif$
 }
-$endif$
 $endif$
 $if(lof)$
 \listoffigures
@@ -1062,6 +1038,9 @@ $body$
 $if(has-frontmatter)$
 \backmatter
 $endif$
+$if(nocite-ids)$
+\nocite{$for(nocite-ids)$$it$$sep$, $endfor$}
+$endif$
 $if(natbib)$
 $if(bibliography)$
 $if(biblio-title)$
@@ -1071,26 +1050,12 @@ $else$
 \renewcommand\refname{$biblio-title$}
 $endif$
 $endif$
-$if(beamer)$
-\begin{frame}[allowframebreaks]{$biblio-title$}
-  \bibliographytrue
-$endif$
-  \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
-$if(beamer)$
-\end{frame}
-$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
 
 $endif$
 $endif$
 $if(biblatex)$
-$if(beamer)$
-\begin{frame}[allowframebreaks]{$biblio-title$}
-  \bibliographytrue
-  \printbibliography[heading=none]
-\end{frame}
-$else$
 \printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
-$endif$
 
 $endif$
 $for(include-after)$
