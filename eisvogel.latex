@@ -1,6 +1,6 @@
 %%
-% Copyright (c) 2017 - 2025, Pascal Wagler;
-% Copyright (c) 2014 - 2025, John MacFarlane
+% Copyright (c) 2017 - 2026, Pascal Wagler;
+% Copyright (c) 2014 - 2026, John MacFarlane
 %
 % All rights reserved.
 %
@@ -39,6 +39,26 @@
 % For usage information and examples visit the official GitHub page:
 % https://github.com/Wandmalfarbe/pandoc-latex-template
 %%
+$--
+$-- PDF standard support (PDF/A, PDF/UA, PDF/X)
+$-- Requires LuaLaTeX and recent LaTeX (2023+)
+$--
+$if(pdfstandard)$
+\DocumentMetadata{
+$if(pdfstandard.version)$
+  pdfversion=$pdfstandard.version$,
+$endif$
+$if(pdfstandard.standards)$
+  pdfstandard={$for(pdfstandard.standards)$$it$$sep$,$endfor$},
+$endif$
+$if(pdfstandard.tagging)$
+  tagging=on,
+$endif$
+$if(lang)$
+  lang=$lang$,
+$endif$
+  xmp=true}
+$endif$
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
